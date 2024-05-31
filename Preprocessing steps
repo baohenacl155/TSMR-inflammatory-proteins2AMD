@@ -1,0 +1,25 @@
+# Load the packages you need to use, if you don't have them installed, you need to install them in advance.
+library(TwoSampleMR)
+library(data.table)
+library(tidyverse)
+library(readxl)
+library(writexl)
+
+# Read the GWAS data files of the exposure factors, here you need to put them under the working directory you set up.The dataset is accessible for download from the GWAS catalogue under the accession numbers GCST90274758–GCST90274848.
+FileNames <-list.files(paste0(getwd()),pattern=".gz")
+exp_dat_ids <- FileNames
+exps <- FileNames
+
+
+# The following code is cyclic and does not require any changes 
+for (qaq in 1:length(exp_dat_ids)) { # 
+  exp_dat_id <- exp_dat_ids[qaq]
+  exp <- exps[qaq]
+  
+  d3<- try(fread(paste0(getwd(),"/",FileNames[qaq]),sep = "\t"),silent = T)
+   d3$Phenotype <- exp_dat_ids[qaq]
+  # d3$samplesize <- Samplesize[qaq]
+  d3 <- d3[,-(9)]
+  colnames(d3) <- c("chr","pos","effect_allele","other_allele","beta","se","eaf","pval","SNP","samplesize","Phenotype")
+  fwrite(d3,paste0(FileNames[qaq]),sep=",", col.names = T, row.names = F, quote = F)
+  }
